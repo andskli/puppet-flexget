@@ -1,4 +1,0 @@
-#$proxy_host     = "foo.bar.com"
-#$proxy_port     = 1234
-#$proxy_user     = "asdf"
-#$proxy_password = "asdf"
