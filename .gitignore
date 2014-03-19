@@ -1,3 +1,4 @@
 Vagrantfile.local
 .vagrant/
 *.sublime-project
+*.sublime-workspace
