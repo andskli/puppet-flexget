@@ -1,2 +1,3 @@
 Vagrantfile.local
 .vagrant/
+*.sublime-project
