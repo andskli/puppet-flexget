@@ -2,7 +2,7 @@
 # vi: set ft=ruby :
 
 require 'yaml'
-YAML::ENGINE.yamler = 'syck' if defined?(YAML::ENGINE)
+YAML::ENGINE.yamler = 'psych' if defined?(YAML::ENGINE)
 
 vagrantfile_local = 'Vagrant_config.yaml'
 if File.exists?(vagrantfile_local)
@@ -17,16 +17,22 @@ unless localconfig.nil?
 end
 
 unless proxy_host.nil?
-    proxyconf = <<-SCRIPT
-export http_proxy='http://#{proxy_user}:#{proxy_password}@#{proxy_host}:#{proxy_port}'
-export https_proxy='https://#{proxy_user}:#{proxy_password}@#{proxy_host}:#{proxy_port}'
-echo 'Acquire::http::Proxy \"http://#{proxy_user}:#{proxy_password}@#{proxy_host}:#{proxy_port}\";' >> /etc/apt/apt.conf.d/proxy.conf
-echo 'Acquire::https::Proxy \"https://#{proxy_user}:#{proxy_password}@#{proxy_host}:#{proxy_port}\";' >> /etc/apt/apt.conf.d/proxy.conf
-    SCRIPT
+  proxystr = ""
+  proxystr << "#{proxy_user}" unless proxy_user.nil?
+  proxystr << ":#{proxy_password}" unless proxy_password.nil?
+  proxystr << "@" unless (proxy_password.nil? || proxy_user.nil?)
+  proxystr << "#{proxy_host}"
+  proxystr << ":#{proxy_port}" unless proxy_port.nil?
+  proxyconf = <<-SCRIPT
+export http_proxy='http://#{proxystr}'
+export https_proxy='https://#{proxystr}'
+echo 'Acquire::http::Proxy \"http://#{proxystr}\";' >> /etc/apt/apt.conf.d/proxy.conf
+echo 'Acquire::https::Proxy \"https://#{proxystr}\";' >> /etc/apt/apt.conf.d/proxy.conf
+  SCRIPT
 else
-    proxyconf = <<-SCRIPT
+  proxyconf = <<-SCRIPT
 echo "No proxy config applicable"
-    SCRIPT
+  SCRIPT
 end
 
 # Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
@@ -36,12 +42,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "precise32"
   config.vm.box_url = "http://files.vagrantup.com/precise32.box"
 
+  config.vm.synced_folder ".", "/srv/work"
 
   config.vm.provision :shell, :inline => proxyconf
 
   config.vm.provision :puppet do |puppet|
     puppet.options = "--verbose"
-    puppet.manifests_path = "manifests"
+    puppet.module_path = "manifests"
     puppet.manifest_file  = "init.pp"
   end
 end
