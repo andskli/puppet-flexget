@@ -2,3 +2,4 @@ Vagrant_config.yaml
 .vagrant/
 *.sublime-project
 *.sublime-workspace
+Gemfile.lock

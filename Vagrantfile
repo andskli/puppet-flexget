@@ -45,8 +45,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provision :shell, :inline => proxyconf
 
   config.vm.provision :puppet do |puppet|
+    puppet.manifests_path = "vagrant"
+    puppet.manifest_file = "base.pp"
+    puppet.module_path = "../"
     puppet.options = "--verbose"
-    puppet.module_path = "manifests"
-    puppet.manifest_file  = "init.pp"
   end
 end

@@ -1,12 +1,10 @@
 # == Class: flexget
-class flexget (
-  $conf_path    = '/usr/local/etc/flexget.conf',
-  $user         = 'flexget',
-  $group        = 'flexget',
-  $uid          = 1337,
-  $gid          = 1337,
-  $homedir      = '/home/flexget'
-  ) {
+
+class flexget {
+
+  include flexget::params
+
+  class { 'flexget::install': }
 
   user { $user:
     home    => $homedir,
@@ -24,16 +22,7 @@ class flexget (
   }
 
   group { "flexget":
-    gid => 1337,
-  }
-
-  package { "python-pip":
-    ensure => present,
-    notify => Exec['pip_install_flexget'],
-  }
-
-  exec { "pip_install_flexget":
-    command => '/usr/bin/pip install -U flexget',
+    gid => $gid,
   }
 
   exec { "run_flexget":

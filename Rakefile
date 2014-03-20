@@ -1,12 +1,12 @@
-require 'rake'
-require 'rspec/core/rake_task'
+require 'rubygems'
+require 'puppetlabs_spec_helper/rake_tasks'
 
 desc "Run all RSpec code examples"
 RSpec::Core::RakeTask.new(:rspec) do |t|
   t.rspec_opts = File.read("spec/spec.opts").chomp || ""
 end
 
-SPEC_SUITES = (Dir.entries('spec') - ['.', '..','fixtures']).select {|e| File.directory? "spec/#{e}" }
+SPEC_SUITES = (Dir.entries('spec') - ['.', '..','fixtures']).select { |e| File.directory? "spec/#{e}" }
 namespace :rspec do
   SPEC_SUITES.each do |suite|
     desc "Run #{suite} RSpec code examples"
