@@ -9,18 +9,18 @@ class flexget (
   ) {
 
   user { $user:
-    home => $homedir,
-    ensure => present,
-    uid => $uid,
-    gid => $gid,
+    home    => $homedir,
+    ensure  => present,
+    uid     => $uid,
+    gid     => $gid,
   }
 
   file { $conf_path:
-    ensure => file,
-    owner => $user,
-    group => $group,
-    mode => 640,
-    notify => Exec['run_flexget'],
+    ensure  => file,
+    owner   => $user,
+    group   => $group,
+    mode    => '0640',
+    notify  => Exec['run_flexget'],
   }
 
   group { "flexget":
@@ -37,9 +37,9 @@ class flexget (
   }
 
   exec { "run_flexget":
-    command => "/usr/local/bin/flexget -c ${conf_path}",
-    path => "/usr/bin:/usr/sbin:/bin:/usr/local/bin",
-    user => $user,
+    command   => "/usr/local/bin/flexget -c ${conf_path}",
+    path      => "/usr/bin:/usr/sbin:/bin:/usr/local/bin",
+    user      => $user,
   }
 
 }
