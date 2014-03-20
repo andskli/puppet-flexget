@@ -1,6 +1,9 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+require 'yaml'
+YAML::ENGINE.yamler = 'syck' if defined?(YAML::ENGINE)
+
 vagrantfile_local = 'Vagrant_config.yaml'
 if File.exists?(vagrantfile_local)
   localconfig = YAML::load_file(vagrantfile_local)
