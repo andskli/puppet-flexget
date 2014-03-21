@@ -43,6 +43,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box_url = "http://files.vagrantup.com/precise32.box"
 
   config.vm.provision :shell, :inline => proxyconf
+  config.vm.provision :shell, :inline => "mkdir -p /tmp/modules/flexget && ln -s /vagrant/manifests /tmp/modules/flexget"
 
   config.vm.provision :puppet do |puppet|
     puppet.manifests_path = "vagrant"
