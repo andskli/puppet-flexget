@@ -15,10 +15,7 @@ class flexget::install (
   }
 
   cron { 'flexget':
-    ensure        => $flexget::cron_enabled ? {
-      'false' => 'absent',
-      default => 'present'
-    },
+    ensure        => $flexget::cron_enabled,
     command       => "LANG=en_US.UTF-8 ${flexget::bin_path} -c ${flexget::config_file} execute 2>&1 >/dev/null",
     user          => $flexget::user,
     minute        => [15, 45],

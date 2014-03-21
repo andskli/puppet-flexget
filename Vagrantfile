@@ -16,6 +16,12 @@ unless localconfig.nil?
   proxy_password = localconfig['proxy']['password']
 end
 
+script = ""
+script << <<-SCRIPT
+test ! -d /tmp/modules/flexget && mkdir -p /tmp/modules/flexget
+test ! -e /tmp/modules/flexget && ln -s /vagrant/manifests /tmp/modules/flexget
+SCRIPT
+
 unless proxy_host.nil?
   proxystr = ""
   proxystr << "#{proxy_user}" unless proxy_user.nil?
@@ -23,16 +29,14 @@ unless proxy_host.nil?
   proxystr << "@" unless (proxy_password.nil? || proxy_user.nil?)
   proxystr << "#{proxy_host}"
   proxystr << ":#{proxy_port}" unless proxy_port.nil?
-  proxyconf = <<-SCRIPT
+  script << <<-SCRIPT
 export http_proxy='http://#{proxystr}'
 export https_proxy='https://#{proxystr}'
 echo 'Acquire::http::Proxy \"http://#{proxystr}\";' >> /etc/apt/apt.conf.d/proxy.conf
 echo 'Acquire::https::Proxy \"https://#{proxystr}\";' >> /etc/apt/apt.conf.d/proxy.conf
   SCRIPT
 else
-  proxyconf = <<-SCRIPT
-echo "No proxy config applicable"
-  SCRIPT
+  script << 'echo "No proxy config defined"'
 end
 
 # Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
@@ -42,8 +46,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "precise32"
   config.vm.box_url = "http://files.vagrantup.com/precise32.box"
 
-  config.vm.provision :shell, :inline => proxyconf
-  config.vm.provision :shell, :inline => "mkdir -p /tmp/modules/flexget && ln -s /vagrant/manifests /tmp/modules/flexget"
+  config.vm.provision :shell, :inline => script
 
   config.vm.provision :puppet do |puppet|
     puppet.manifests_path = "vagrant"

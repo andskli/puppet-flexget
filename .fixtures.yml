@@ -1,3 +1,3 @@
 fixtures:
-	symlinks:
-		flexget: "#{source_dir}"
+  symlinks:
+    flexget: "#{source_dir}"

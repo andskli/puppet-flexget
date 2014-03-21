@@ -11,7 +11,11 @@ class flexget::params {
   $gid = undef
   $homedir = '/home/flexget'
 
-  $cron_enabled = true
+  $cron = true
+  $cron_enabled = $cron ? {
+    false     => 'absent',
+    default   => 'present'
+  }
 
   $autoupgrade = false
 }
