@@ -13,24 +13,34 @@ class flexget inherits flexget::params {
     gid         => $flexget::gid,
   }
 
-  file { 'flexget_conf':
-    ensure  => file,
-    path    => $flexget::conf_path,
-    owner   => $flexget::user,
-    group   => $flexget::group,
-    mode    => '0640',
-    notify  => Exec['run_flexget'],
+  group { 'flexget':
+    gid         => $flexget::gid,
   }
 
-  group { 'flexget':
-    gid => $flexget::gid,
+  file { 'flexget_vardir':
+    ensure      => directory,
+    path        => $flexget::base_path,
+    owner       => $flexget::user,
+    group       => $flexget::group,
+    mode        => '0644',
+    recurse     => true,
+  }
+
+  file { 'flexget_conf':
+    ensure      => file,
+    path        => $flexget::config_file,
+    owner       => $flexget::user,
+    group       => $flexget::group,
+    mode        => '0644',
+    notify      => Exec['run_flexget'],
+    require     => File['flexget_vardir'],
   }
 
   exec { 'run_flexget':
-    command   => "/usr/local/bin/flexget -c ${::conf_path}",
-    path      => '/usr/bin:/usr/sbin:/bin:/usr/local/bin',
-    user      => $flexget::user,
-    onlyif    => '/usr/bin/test -f /usr/local/bin/flexget',
+    command     => "${flexget::bin_path} -c ${flexget::config_file} execute",
+    path        => '/usr/bin:/usr/sbin:/bin:/usr/local/bin',
+    user        => $flexget::user,
+    onlyif      => "${flexget::bin_path} -c ${flexget::config_file} check",
   }
 
 }

@@ -2,7 +2,7 @@
 
 class flexget::install (
   $proxy    = undef,
-  ) {
+) inherits flexget::params {
 
   package { 'python-pip':
     ensure => present,
@@ -12,6 +12,16 @@ class flexget::install (
     ensure      => installed,
     provider    => pip,
     require     => Package['python-pip']
+  }
+
+  cron { 'flexget':
+    ensure        => $flexget::cron_enabled ? {
+      'false' => 'absent',
+      default => 'present'
+    },
+    command       => "LANG=en_US.UTF-8 ${flexget::bin_path} -c ${flexget::config_file} execute 2>&1 >/dev/null",
+    user          => $flexget::user,
+    minute        => [15, 45],
   }
 
 }
