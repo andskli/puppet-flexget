@@ -1,36 +1,36 @@
 # == Class: flexget
 
-class flexget {
+class flexget inherits flexget::params {
 
-  include params
-  include install
+  include flexget::install
 
   user { 'flexget':
     ensure      => present,
-    name        => $::user,
-    home        => $::homedir,
+    name        => $flexget::user,
+    home        => $flexget::homedir,
     managehome  => true,
-    uid         => $::uid,
-    gid         => $::gid,
+    uid         => $flexget::uid,
+    gid         => $flexget::gid,
   }
 
-  file { 'flexget.conf':
+  file { 'flexget_conf':
     ensure  => file,
-    path    => $::conf_path,
-    owner   => $::user,
-    group   => $::group,
+    path    => $flexget::conf_path,
+    owner   => $flexget::user,
+    group   => $flexget::group,
     mode    => '0640',
     notify  => Exec['run_flexget'],
   }
 
   group { 'flexget':
-    gid => $::gid,
+    gid => $flexget::gid,
   }
 
   exec { 'run_flexget':
     command   => "/usr/local/bin/flexget -c ${::conf_path}",
     path      => '/usr/bin:/usr/sbin:/bin:/usr/local/bin',
-    user      => $::user,
+    user      => $flexget::user,
+    onlyif    => '/usr/bin/test -f /usr/local/bin/flexget',
   }
 
 }

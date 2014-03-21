@@ -7,4 +7,6 @@ class flexget::params {
   $uid = undef
   $gid = undef
   $homedir = '/home/flexget'
+
+  $autoupgrade = false
 }
