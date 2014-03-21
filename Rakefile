@@ -4,6 +4,7 @@ require 'puppet-lint/tasks/puppet-lint'
 
 PuppetLint.configuration.send('disable_80chars')
 PuppetLint.configuration.ignore_paths = ["spec/**/*.pp"]
+PuppetLint.configuration.send('disable_autoloader_layout')
 
 desc "Run puppet in noop mode and check for syntax errors."
 task :validate do

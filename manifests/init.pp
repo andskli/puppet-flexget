@@ -2,33 +2,31 @@
 
 class flexget {
 
-  include flexget::params
-
   class { 'flexget::install': }
 
-  user { $user:
-    home    => $homedir,
+  user { $::user:
     ensure  => present,
-    uid     => $uid,
-    gid     => $gid,
+    home    => $::homedir,
+    uid     => $::uid,
+    gid     => $::gid,
   }
 
-  file { $conf_path:
+  file { $::conf_path:
     ensure  => file,
-    owner   => $user,
-    group   => $group,
+    owner   => $::user,
+    group   => $::group,
     mode    => '0640',
     notify  => Exec['run_flexget'],
   }
 
-  group { "flexget":
-    gid => $gid,
+  group { 'flexget':
+    gid => $::gid,
   }
 
-  exec { "run_flexget":
-    command   => "/usr/local/bin/flexget -c ${conf_path}",
-    path      => "/usr/bin:/usr/sbin:/bin:/usr/local/bin",
-    user      => $user,
+  exec { 'run_flexget':
+    command   => "/usr/local/bin/flexget -c ${::conf_path}",
+    path      => '/usr/bin:/usr/sbin:/bin:/usr/local/bin',
+    user      => $::user,
   }
 
 }
