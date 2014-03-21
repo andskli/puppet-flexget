@@ -1,13 +1,8 @@
 # == Class: flexget::install
 
-class flexget::install (
-  $conf_path    = '/usr/local/etc/flexget.conf',
-  $user         = 'flexget',
-  $group        = 'flexget',
-  $uid          = '1337',
-  $gid          = '1337',
-  $homedir      = '/home/flexget',
-) {
+class flexget::install {
+
+  include params
 
   package { 'python-pip':
     ensure => present,
@@ -16,7 +11,11 @@ class flexget::install (
 
   exec { 'pip_install_flexget':
     command     => '/usr/bin/pip install -U flexget',
-    refreshonly => true,
+  }
+
+  file { 'flexget_bin':
+    ensure      => present,
+    path        => '/usr/local/bin/flexget',
   }
 
 }

@@ -2,17 +2,21 @@
 
 class flexget {
 
-  class { 'flexget::install': }
+  include params
+  include install
 
-  user { $::user:
-    ensure  => present,
-    home    => $::homedir,
-    uid     => $::uid,
-    gid     => $::gid,
+  user { 'flexget':
+    ensure      => present,
+    name        => $::user,
+    home        => $::homedir,
+    managehome  => true,
+    uid         => $::uid,
+    gid         => $::gid,
   }
 
-  file { $::conf_path:
+  file { 'flexget.conf':
     ensure  => file,
+    path    => $::conf_path,
     owner   => $::user,
     group   => $::group,
     mode    => '0640',
