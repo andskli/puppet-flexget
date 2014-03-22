@@ -34,6 +34,7 @@ export http_proxy='http://#{proxystr}'
 export https_proxy='https://#{proxystr}'
 echo 'Acquire::http::Proxy \"http://#{proxystr}\";' >> /etc/apt/apt.conf.d/proxy.conf
 echo 'Acquire::https::Proxy \"https://#{proxystr}\";' >> /etc/apt/apt.conf.d/proxy.conf
+sed -i 's/\(us\)/se/' /etc/apt/sources.list
   SCRIPT
 else
   script << 'echo "No proxy config defined"'
