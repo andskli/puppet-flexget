@@ -14,6 +14,7 @@ unless localconfig.nil?
   proxy_port = localconfig['proxy']['port']
   proxy_user = localconfig['proxy']['user']
   proxy_password = localconfig['proxy']['password']
+  apt_mirror_country = localconfig['apt']['mirror_country']
 end
 
 script = ""
@@ -34,7 +35,7 @@ export http_proxy='http://#{proxystr}'
 export https_proxy='https://#{proxystr}'
 echo 'Acquire::http::Proxy \"http://#{proxystr}\";' >> /etc/apt/apt.conf.d/proxy.conf
 echo 'Acquire::https::Proxy \"https://#{proxystr}\";' >> /etc/apt/apt.conf.d/proxy.conf
-sed -i 's/\(us\)/se/' /etc/apt/sources.list
+sed -i 's/\(us\)/#{apt_mirror_country}/' /etc/apt/sources.list
   SCRIPT
 else
   script << 'echo "No proxy config defined"'
